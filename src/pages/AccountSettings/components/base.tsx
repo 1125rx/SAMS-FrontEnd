@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, Descriptions, Tag} from 'antd';
+import {Avatar, Descriptions, Input, Tag} from 'antd';
 import {useRequest} from 'umi';
 import {currentUser} from "@/services/ant-design-pro/api";
 import message from "antd/es/message";

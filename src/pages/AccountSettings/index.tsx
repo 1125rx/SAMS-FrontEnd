@@ -6,10 +6,11 @@ import BindingView from './components/binding';
 import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
+import SetTags from "@/pages/AccountSettings/components/SetTags";
 
 const { Item } = Menu;
 
-type AccountSettingsStateKeys = 'base' | 'security' | 'binding' | 'notification';
+type AccountSettingsStateKeys = 'base' | 'security' | 'binding' | 'notification'|'SetTags';
 type AccountSettingsState = {
   mode: 'inline' | 'horizontal';
   selectKey: AccountSettingsStateKeys;
@@ -21,6 +22,7 @@ const AccountSettings: React.FC = () => {
     security: '安全设置',
     binding: '账号绑定',
     notification: '修改个人信息',
+    SetTags: '修改标签',
   };
 
   const [initConfig, setInitConfig] = useState<AccountSettingsState>({
@@ -71,6 +73,8 @@ const AccountSettings: React.FC = () => {
         return <BindingView />;
       case 'notification':
         return <NotificationView />;
+      case 'SetTags':
+        return <SetTags />
       default:
         return null;
     }

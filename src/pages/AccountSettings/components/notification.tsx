@@ -2,6 +2,7 @@ import React from 'react';
 import {UploadOutlined} from '@ant-design/icons';
 import {Button, message, Upload} from 'antd';
 import ProForm, {ProFormSelect, ProFormText, ProFormTextArea,} from '@ant-design/pro-form';
+// @ts-ignore
 import {useRequest} from 'umi';
 
 import styles from './BaseView.less';
