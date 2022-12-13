@@ -1,5 +1,6 @@
 import {PageContainer, ProForm, ProFormDigit, ProFormSelect, ProFormText, ProList} from '@ant-design/pro-components';
 import {Button, Modal, Space, Tag} from 'antd';
+// @ts-ignore
 import React, {useEffect, useRef, useState} from 'react';
 import {getUserList, matchUsers} from "@/services/ant-design-pro/api";
 import ShowUserProfile from "@/pages/Person/PersonList/components/ShowUserProfile";
@@ -168,11 +169,8 @@ export default () => {
                     <a key="run" onClick={() => {
                       console.log(row.userId)
                     }}>
-                      邀请
+                      复制id
                     </a>,
-                    <a key="delete">
-                      删除
-                    </a>
                   ]
                 )
               }
@@ -242,6 +240,7 @@ export default () => {
           <ProForm
             size={"middle"}
             formRef={formRef}
+            // @ts-ignore
             onFinish={(item: API.MatchUserParams)=>{
               handleMatch(item)
             }}

@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {TeamOutlined, UserOutlined} from '@ant-design/icons';
-import {Avatar, Button, Descriptions, Drawer, List, Modal, Result, Space, Tag} from 'antd';
-import {getMyCreateTeamList, getTeamList} from "@/services/ant-design-pro/api";
+import {DeleteOutlined, EditOutlined, HomeOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
+import {Avatar, Button, Descriptions, Drawer, List, Modal, Popconfirm, Result, Space, Tag} from 'antd';
+import {deleteTeam, getMyCreateTeamList, getTeamList} from "@/services/ant-design-pro/api";
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import {PageContainer, ProForm} from "@ant-design/pro-components";
-import ApplyJoinTeam from "@/pages/Team/TeamList/components/ApplyJoinTeam";
 import {ProFormSelect, ProFormText} from "@ant-design/pro-form/es";
 import {ProFormInstance} from "@ant-design/pro-form";
 import message from "antd/es/message";
+import UpdateTeam from "@/pages/Team/MyCreateTeam/components/UpdateTeam";
 
 
 // const data = Array.from({ length: 23 }).map((_, i) => ({
@@ -123,9 +123,9 @@ const App: React.FC = () => {
     )
 
   }
-  const isShowModal = (show: boolean, data: number) => {
+  const isShowUpdateModal = (show: boolean, data: API.TeamUserVOParams) => {
     setIsModalVisible(show)
-    setApplyTeamId(data)
+    setTeam(data)
   }
   const isShowSearch = (show: boolean) => {
     setIsSearchVisible(show)
@@ -154,6 +154,25 @@ const App: React.FC = () => {
     setOpen(show)
     setTeam(item)
   }
+  const confirm = async (item: number) => {
+    const res: API.DeleteTeamParams = {
+      t_id: item
+    }
+    const response = await deleteTeam(res)
+    if (response.code === 0 && response.data === true){
+      message.success('已成功删除！');
+      location.reload()
+    }
+    else {
+      message.error("删除失败！错误代码： "+response.code)
+    }
+
+  };
+
+  const cancel = (e: React.MouseEvent<HTMLElement>) => {
+    console.log(e);
+  };
+  // @ts-ignore
   return (
     <PageContainer>
       <List
@@ -183,6 +202,24 @@ const App: React.FC = () => {
               <Button type="primary" shape="circle" icon={<TeamOutlined />} title={"队员信息"} onClick={() => {
                 isShowMembers(true,item)
               }}/>,
+              <Popconfirm
+                title={"确定要解散"+item.t_name+"吗？一旦解散，将删除所有相关信息"}
+                onConfirm={()=>{
+                  confirm(item.t_id)
+                }}
+                // @ts-ignore
+                onCancel={cancel}
+              >
+                <Button type={"primary"} shape={"circle"} icon={<DeleteOutlined />} title={"解散队伍"} onClick={()=>{
+                  console.log(item.t_id)
+                }}/>
+              </Popconfirm>,
+              <Button type={"primary"} shape={"circle"} icon={<HomeOutlined />} title={"进入空间"} onClick={()=>{
+                console.log(item.t_id)
+              }}/>,
+              <Button type={"primary"} shape={"circle"} icon={<EditOutlined />} title={"编辑队伍信息"} onClick={()=>{
+                isShowUpdateModal(true,item)
+              }}/>,
               <Tag color={statusMap[item.t_status].color}>{statusMap[item.t_status].text}</Tag>,
             ]}
             extra={
@@ -208,10 +245,10 @@ const App: React.FC = () => {
         isShowDrawer={isShowDrawer}
         tags={createUserTags}
       />
-      <ApplyJoinTeam
-        applyTeamId={applyTeamId}
-        isShowApplyModal={isShowModal}
+      <UpdateTeam
         isModalVisible={isModalVisible}
+        isShowUpdateModal={isShowUpdateModal}
+        team={team}
       />
       <Drawer width={640} placement="right" closable={false}  open={open} onClose={()=>isShowMembers(false,team)} title={"Members' Profile"}>
         <Space direction={"vertical"}>

@@ -61,6 +61,24 @@ export async function matchUsers(num: API.MatchUserParams){
     data: num,
   })
 }
+export async function updateTags(item: API.UpdateTagParams){
+  return request<API.BaseResponse<boolean>>('/api/user/tags',{
+    method: 'POST',
+    data: item,
+  })
+}
+export async function deleteTeam(item: API.DeleteTeamParams){
+  return request<API.BaseResponse<boolean>>('/api/team/delete',{
+    method: 'POST',
+    data: item,
+  })
+}
+export async function updateTeam(data: API.UpdateTeamParams){
+  return request<API.BaseResponse<boolean>>('/api/team/update',{
+    method: 'POST',
+    data: data
+  })
+}
 
 export async function getMyCreateTeamList(){
   return request<API.BaseResponse<API.TeamUserVOParams[]>>('/api/team/list/my/create')

@@ -22,10 +22,25 @@ declare namespace API {
   type MatchUserParams = {
     num: number,
   }
+  type UpdateTagParams = {
+    tags: string,
+  }
+  type UpdateTeamParams = {
+    t_id: number,
+    t_name: string,
+    t_description: string,
+    t_expireTime: Date,
+    t_status: number,
+    t_password: string,
+    t_avatarUrl: string,
+  }
   type UserParams = {
     userName: string,
     userAccount: string,
     gender: string,
+  }
+  type DeleteTeamParams = {
+    t_id: number,
   }
 
   type DealApplyParams = {
@@ -46,7 +61,7 @@ declare namespace API {
     t_description: string;
     t_maxNum: number;
     t_expireTime: string;
-    t_status: number;
+    t_status: Date;
     t_password: string;
   }
 

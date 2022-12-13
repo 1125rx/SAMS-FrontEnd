@@ -10,7 +10,7 @@ const Settings: LayoutSettings & {
   navTheme: 'light',
   // 拂晓蓝
   colorPrimary: '#13C2C2',
-  layout: 'side',
+  layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
@@ -24,9 +24,10 @@ const Settings: LayoutSettings & {
 };
 /*
 {
+  {
   "navTheme": "light",
   "colorPrimary": "#13C2C2",
-  "layout": "side",
+  "layout": "mix",
   "contentWidth": "Fluid",
   "fixedHeader": false,
   "fixSiderbar": true,
@@ -34,6 +35,7 @@ const Settings: LayoutSettings & {
   "splitMenus": false,
   "siderMenuType": "sub",
   "logo": "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+}
 }
 * */
 
