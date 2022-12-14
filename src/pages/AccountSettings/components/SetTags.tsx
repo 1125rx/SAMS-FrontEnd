@@ -5,6 +5,7 @@ import {Button, Input, Space, Tag} from 'antd';
 import {TweenOneGroup} from 'rc-tween-one';
 import {currentUser, updateTags} from "@/services/ant-design-pro/api";
 import message from "antd/es/message";
+import {json} from "express";
 
 const SetTags: React.FC = () => {
   const [tags, setTags] = useState<string[]>(['Tag 1', 'Tag 2', 'Tag 3']);

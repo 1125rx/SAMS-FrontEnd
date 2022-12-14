@@ -1,13 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {DeleteOutlined, EditOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
-import {Avatar, Button, Descriptions, Drawer, List, Modal, Popconfirm, Result, Space, Tag} from 'antd';
-import {deleteTeam, getMyCreateTeamList, getTeamList} from "@/services/ant-design-pro/api";
+import {HomeOutlined, SearchOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
+import {Avatar, Button, Descriptions, Drawer, List, Modal, Space, Tag} from 'antd';
+import {getMyJoinTeam} from "@/services/ant-design-pro/api";
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import {PageContainer, ProForm} from "@ant-design/pro-components";
 import {ProFormSelect, ProFormText} from "@ant-design/pro-form/es";
 import {ProFormInstance} from "@ant-design/pro-form";
 import message from "antd/es/message";
-import UpdateTeam from "@/pages/Team/MyCreateTeam/components/UpdateTeam";
 
 
 // const data = Array.from({ length: 23 }).map((_, i) => ({
@@ -46,26 +45,25 @@ const App: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [teamQuery, setTeamQuery] = useState<API.TeamQueryParams>({})
   const [teamList, setTeamList] = useState<API.TeamUserVOParams[]>([])
+  const [open,setOpen] = useState<boolean>(false)
   // @ts-ignore
   const [createUser, setCreateUser] = useState<API.CurrentUser>({})
-  // @ts-ignore
-  const [team,setTeam] = useState<API.TeamUserVOParams>({})
-  const [open,setOpen] = useState<boolean>(false)
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   // @ts-ignore
-  const [applyTeamId, setApplyTeamId] = useState<number>({})
+  const [team,setTeam] = useState<API.TeamUserVOParams>({})
+  // @ts-ignore
   const [isShowDetails, setIsShowDetails] = useState<boolean>(false)
   // @ts-ignore
   const [createUserTags, setCreateUserTags] = useState<string>(undefined)
   const formRef = useRef<ProFormInstance>()
   // @ts-ignore
   useEffect(async () => {
-    const res = await getMyCreateTeamList()
+    const res = await getMyJoinTeam(teamQuery)
     console.log(res)
+    console.log("teamQuery useEffect", teamQuery)
     if (res.data)
       setTeamList(res.data)
-  }, [])
+  }, [teamQuery])
   const showTags = (item: API.CurrentUser) => {
     const list = []
     if (item) {
@@ -103,39 +101,32 @@ const App: React.FC = () => {
     )
   }
 
-  const showMembers = (item: API.TeamUserVOParams) =>{
-    console.log("123",item);
-    if (item){
-      if (item.members){
-        const profile=[]
-        for (let i=0;i<item.members.length;i++){
+  // @ts-ignore
+  const showMembers = (item: API.TeamUserVOParams) => {
+    console.log("123", item);
+    if (item) {
+      if (item.members) {
+        const profile = []
+        for (let i = 0; i < item.members.length; i++) {
           profile.push(getProfile(item.members[i]))
         }
         return profile;
       }
     }
-    return (
-      <div>
-        <Result
-          title="No Message"
-        />
-      </div>
-    )
-
-  }
-  const isShowUpdateModal = (show: boolean, data: API.TeamUserVOParams) => {
-    setIsModalVisible(show)
-    setTeam(data)
   }
   const isShowSearch = (show: boolean) => {
     setIsSearchVisible(show)
   }
+    const isShowMembers = (show: boolean, item: API.TeamUserVOParams) =>{
+      setOpen(show)
+      setTeam(item)
+    }
   const handleSearch = async (resValues: API.TeamQueryParams) => {
     if (resValues) {
       setTeamQuery(resValues)
       console.log("resValues", resValues)
       console.log("teamQuery", teamQuery)
-      const resData = await getTeamList(resValues)
+      const resData = await getMyJoinTeam(resValues)
       if (resData.data) {
         setTeamList(resData.data)
       } else
@@ -150,31 +141,20 @@ const App: React.FC = () => {
     setCreateUserTags(() => JSON.stringify(showTags(resCreateUser)))
     console.log("222" + createUserTags)
   }
-  const isShowMembers = (show: boolean, item: API.TeamUserVOParams) =>{
-    setOpen(show)
-    setTeam(item)
-  }
-  const confirm = async (item: number) => {
-    const res: API.DeleteTeamParams = {
-      t_id: item
-    }
-    const response = await deleteTeam(res)
-    if (response.code === 0 && response.data === true){
-      message.success('已成功删除！');
-      location.reload()
-    }
-    else {
-      message.error("删除失败！错误代码： "+response.code)
-    }
 
-  };
-
-  const cancel = (e: React.MouseEvent<HTMLElement>) => {
-    console.log(e);
-  };
-  // @ts-ignore
   return (
     <PageContainer>
+      <div>
+        <Button
+          type={"primary"}
+          shape={"round"}
+          title={"筛选队伍"}
+          icon={<SearchOutlined/>}
+          onClick={() => {
+            isShowSearch(true)
+          }}
+        />
+      </div>
       <List
         itemLayout="vertical"
         size="large"
@@ -202,20 +182,8 @@ const App: React.FC = () => {
               <Button type="primary" shape="circle" icon={<TeamOutlined />} title={"队员信息"} onClick={() => {
                 isShowMembers(true,item)
               }}/>,
-              <Popconfirm
-                title={"确定要解散"+item.t_name+"吗？一旦解散，将删除所有相关信息"}
-                onConfirm={()=>{
-                  confirm(item.t_id)
-                }}
-                // @ts-ignore
-                onCancel={cancel}
-              >
-                <Button type={"primary"} shape={"circle"} icon={<DeleteOutlined />} title={"解散队伍"} onClick={()=>{
-                  console.log(item.t_id)
-                }}/>
-              </Popconfirm>,
-              <Button type={"primary"} shape={"circle"} icon={<EditOutlined />} title={"编辑队伍信息"} onClick={()=>{
-                isShowUpdateModal(true,item)
+              <Button type={"primary"} shape={"circle"} icon={<HomeOutlined />} title={"进入空间"} onClick={()=>{
+                console.log(item.t_id)
               }}/>,
               <Tag color={statusMap[item.t_status].color}>{statusMap[item.t_status].text}</Tag>,
             ]}
@@ -242,17 +210,6 @@ const App: React.FC = () => {
         isShowDrawer={isShowDrawer}
         tags={createUserTags}
       />
-      <UpdateTeam
-        isModalVisible={isModalVisible}
-        isShowUpdateModal={isShowUpdateModal}
-        team={team}
-      />
-      <Drawer width={640} placement="right" closable={false}  open={open} onClose={()=>isShowMembers(false,team)} title={"Members' Profile"}>
-        <Space direction={"vertical"}>
-          {showMembers(team)}
-        </Space>
-      </Drawer>
-
       <Modal
         title={"搜索界面"}
         visible={isSearchVisible}
@@ -272,10 +229,6 @@ const App: React.FC = () => {
           <ProFormText
             label={"队伍id"}
             name={"id"}
-          />
-          <ProFormText
-            label={"队伍名称"}
-            name={"name"}
           />
           <ProFormText
             label={"关键词"}
@@ -305,6 +258,11 @@ const App: React.FC = () => {
           />
         </ProForm>
       </Modal>
+      <Drawer width={640} placement="right" closable={false}  open={open} onClose={()=>isShowMembers(false,team)} title={"Members' Profile"}>
+        <Space direction={"vertical"}>
+          {showMembers(team)}
+        </Space>
+      </Drawer>
     </PageContainer>
 
 

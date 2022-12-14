@@ -2,9 +2,10 @@ import {PageContainer, ProForm, ProFormDigit, ProFormSelect, ProFormText, ProLis
 import {Button, Modal, Space, Tag} from 'antd';
 // @ts-ignore
 import React, {useEffect, useRef, useState} from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {getUserList, matchUsers} from "@/services/ant-design-pro/api";
 import ShowUserProfile from "@/pages/Person/PersonList/components/ShowUserProfile";
-import {KeyOutlined, RollbackOutlined, SearchOutlined} from "@ant-design/icons";
+import {CopyOutlined, KeyOutlined, RollbackOutlined, SearchOutlined} from "@ant-design/icons";
 import message from "antd/es/message";
 import {ProFormInstance} from "@ant-design/pro-form";
 
@@ -103,14 +104,6 @@ export default () => {
               >
                 按标签匹配
               </Button>
-              <Button
-                type={"primary"}
-                shape={"round"}
-                title={"匹配用户"}
-                icon={<KeyOutlined/>}
-              >
-                按描述匹配
-              </Button>
             </Space.Compact>
             <Button
               type={"primary"}
@@ -166,11 +159,26 @@ export default () => {
               render: (_, row: API.CurrentUser) => {
                 return (
                   [
-                    <a key="run" onClick={() => {
-                      console.log(row.userId)
-                    }}>
-                      复制id
-                    </a>,
+                    // @ts-ignore
+                    <CopyToClipboard
+                      // @ts-ignore
+                      text={row.userId}
+                      onCopy={(_, result) => {
+                        if (result) {
+                          message.success('复制成功');
+                        } else {
+                          message.error('复制失败，请稍后再试');
+                        }
+                      }}
+                    >
+                      <Button
+                        type='primary'
+                        icon={<CopyOutlined />}
+                        shape={"round"}
+                        title={"复制id"}
+                      />
+                    </CopyToClipboard>
+
                   ]
                 )
               }

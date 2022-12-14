@@ -49,6 +49,17 @@ export async function getTeamList(params: API.TeamQueryParams){
     data: params,
   })
 }
+
+export async function getMyJoinTeam(params: API.TeamQueryParams){
+  return request<API.BaseResponse<API.TeamUserVOParams[]>>('/api/team/list/my/join',{
+    method: 'POST',
+    data: params,
+  })
+}
+
+export async function getHistoryList(){
+  return request<API.BaseResponse<API.TeamUserVOParams>>('/api/team/list/get/history')
+}
 export async function getUserList(params: API.UserParams){
   return request<API.BaseResponse<API.CurrentUser[]>>('/api/user/search',{
     method: 'POST',

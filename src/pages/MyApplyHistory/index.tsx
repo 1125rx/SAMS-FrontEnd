@@ -1,8 +1,8 @@
-import {getApplyListAPI, setErrorApply, setPassApply} from '@/services/ant-design-pro/api';
+import {getHistoryList, setErrorApply, setPassApply} from '@/services/ant-design-pro/api';
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
-import {Button, message, Tag} from 'antd';
+import {message, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import ShowTeam from "@/pages/TableList/components/ShowTeam";
@@ -23,12 +23,13 @@ const statusMap = {
   3: {
     color: 'orange',
     text: '待处理',
-  },
+  }
 }
 const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // @ts-ignore
   const [createUser, setCreateUser] = useState<API.CurrentUser>({})
+  // @ts-ignore
   const [team, setTeam] = useState<API.TeamUserVOParams>({})
   const [isShowTeam, setIsShowTeam] = useState<boolean>(false)
   // @ts-ignore
@@ -123,46 +124,43 @@ const TableList: React.FC = () => {
     {
       title: '提交时间',
       dataIndex: 'createTime',
-      valueType: 'date',
-
-
+      valueType: 'dateTime',
+      defaultSortOrder: "ascend",
+      sorter: (a, b) =>a.createTime.toString().localeCompare(b.createTime.toString())
     },
     {
       title: '状态',
       dataIndex: 'applyStatus',
-      defaultSortOrder: "ascend",
-      sorter: (a, b) => a.applyStatus - b.applyStatus,
       render: (_, record) => <Tag color={statusMap[record.applyStatus].color}>{statusMap[record.applyStatus].text}</Tag>
     },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => [
-        <Button onClick={() => {
-          setApplyStatusSuccess(record.id)
-        }} type="primary" shape="round" disabled={record.applyStatus !== 0}>
-          通过
-        </Button>,
-        <Button onClick={() => {
-          setApplyStatusError(record.id)
-        }} type="primary" shape="round" danger={true} disabled={record.applyStatus !== 0}>
-          拒绝
-        </Button>
-      ],
-    },
+    // {
+    //   title: '操作',
+    //   dataIndex: 'option',
+    //   valueType: 'option',
+    //   render: (_, record) => [
+    //     <Button onClick={() => {
+    //       setApplyStatusSuccess(record.id)
+    //     }} type="primary" shape="round" disabled={record.applyStatus !== 0}>
+    //       通过
+    //     </Button>,
+    //     <Button onClick={() => {
+    //       setApplyStatusError(record.id)
+    //     }} type="primary" shape="round" danger={true} disabled={record.applyStatus !== 0}>
+    //       拒绝
+    //     </Button>
+    //   ],
+    // },
   ];
   return (
     <PageContainer>
       <ProTable<API.TeamApplyParams>
-        headerTitle={'查询表格'}
+
         actionRef={actionRef}
         rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
-        request={async (params = {}) => {
-          const res = await getApplyListAPI(params)
+        search={false}
+        //@ts-ignore
+        request={async () => {
+          const res = await getHistoryList()
           return {
             data: res.data
           }

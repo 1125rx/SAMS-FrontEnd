@@ -25,6 +25,7 @@ export default [
     routes: [
       {path: '/team/list',name: '队伍列表',component: './Team/TeamList'},
       {path: '/team/myCreate',name: '我的创建',component: './Team/MyCreateTeam'},
+      {path: '/team/myJoin',name: '我的加入',component: './Team/MyJoinTeam'},
       {path: '/team/create', name: '创建队伍', component: './Team/CreateTeam'}
     ],
   },
@@ -41,7 +42,9 @@ export default [
     icon: 'table',
     path: '/list',
     routes: [
-      {path: '/list/apply/team', name: '队伍申请', component: './TableList'}
+      {path: '/list/apply/team', name: '队伍申请', component: './TableList'},
+      {path: '/list/welcome/team', name: '队伍邀请', component: './WelcomeList'},
+      {path: '/list/history', name: '历史记录', component: './MyApplyHistory'},
     ],
   },
   {
