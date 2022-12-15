@@ -2,7 +2,7 @@ import {getHistoryList, setErrorApply, setPassApply} from '@/services/ant-design
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
-import {message, Tag} from 'antd';
+import {Avatar, message, Space, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import ShowTeam from "@/pages/TableList/components/ShowTeam";
@@ -91,15 +91,23 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.TeamApplyParams>[] = [
     {
+      dataIndex: 'index',
+      valueType: 'index',
+      width: 48,
+    },
+    {
       title: '申请者',
       dataIndex: 'user',
       render: (dom, entity) => {
         return (
-          <a onClick={() => {
-            isShowDrawer(true, entity.user)
-          }}>
-            {entity.user.userName}
-          </a>
+          <Space>
+            <Avatar src={entity.user.avatarUrl}/>
+            <a onClick={() => {
+              isShowDrawer(true, entity.user)
+            }}>
+              {entity.user.userName}
+            </a>
+          </Space>
         );
       },
     },
@@ -108,11 +116,14 @@ const TableList: React.FC = () => {
       dataIndex: 'team',
       render: (dom, entity) => {
         return (
-          <a onClick={() => {
-            isShowTeamDrawer(true, entity.teamUserVO)
-          }}>
-            {entity.teamUserVO.t_name}
-          </a>
+          <Space>
+            <Avatar src={entity.teamUserVO.t_avatarUrl}/>
+            <a onClick={() => {
+              isShowTeamDrawer(true, entity.teamUserVO)
+            }}>
+              {entity.teamUserVO.t_name}
+            </a>
+          </Space>
         );
       },
     },
@@ -125,7 +136,7 @@ const TableList: React.FC = () => {
       title: '提交时间',
       dataIndex: 'createTime',
       valueType: 'dateTime',
-      defaultSortOrder: "ascend",
+      defaultSortOrder: "descend",
       sorter: (a, b) =>a.createTime.toString().localeCompare(b.createTime.toString())
     },
     {

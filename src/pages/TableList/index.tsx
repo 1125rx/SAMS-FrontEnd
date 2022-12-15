@@ -2,7 +2,7 @@ import {getApplyListAPI, setErrorApply, setPassApply} from '@/services/ant-desig
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
-import {Button, message, Tag} from 'antd';
+import {Avatar, Button, message, Space, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import ShowTeam from "@/pages/TableList/components/ShowTeam";
@@ -90,15 +90,23 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.TeamApplyParams>[] = [
     {
+      dataIndex: 'index',
+      valueType: 'index',
+      width: 48,
+    },
+    {
       title: '申请者',
       dataIndex: 'user',
       render: (dom, entity) => {
         return (
-          <a onClick={() => {
-            isShowDrawer(true, entity.user)
-          }}>
-            {entity.user.userName}
-          </a>
+          <Space>
+            <Avatar src={entity.user.avatarUrl}/>
+            <a onClick={() => {
+              isShowDrawer(true, entity.user)
+            }}>
+              {entity.user.userName}
+            </a>
+          </Space>
         );
       },
     },
@@ -107,11 +115,14 @@ const TableList: React.FC = () => {
       dataIndex: 'team',
       render: (dom, entity) => {
         return (
-          <a onClick={() => {
-            isShowTeamDrawer(true, entity.teamUserVO)
-          }}>
-            {entity.teamUserVO.t_name}
-          </a>
+          <Space>
+            <Avatar src={entity.teamUserVO.t_avatarUrl}/>
+            <a onClick={() => {
+              isShowTeamDrawer(true, entity.teamUserVO)
+            }}>
+              {entity.teamUserVO.t_name}
+            </a>
+          </Space>
         );
       },
     },
@@ -124,14 +135,13 @@ const TableList: React.FC = () => {
       title: '提交时间',
       dataIndex: 'createTime',
       valueType: 'date',
-
-
+      defaultSortOrder: "descend",
+      sorter: (a,b) => a.createTime.toString().localeCompare(b.createTime.toString())
     },
     {
       title: '状态',
       dataIndex: 'applyStatus',
       defaultSortOrder: "ascend",
-      sorter: (a, b) => a.applyStatus - b.applyStatus,
       render: (_, record) => <Tag color={statusMap[record.applyStatus].color}>{statusMap[record.applyStatus].text}</Tag>
     },
     {
@@ -158,10 +168,10 @@ const TableList: React.FC = () => {
         headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
+        //@ts-ignore
         request={async (params = {}) => {
+          //@ts-ignore
           const res = await getApplyListAPI(params)
           return {
             data: res.data
@@ -180,8 +190,6 @@ const TableList: React.FC = () => {
         isShowTeamDrawer={isShowTeamDrawer}
         team={team}
       />
-
-
     </PageContainer>
   );
 };

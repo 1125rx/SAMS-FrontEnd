@@ -57,6 +57,7 @@ export async function getMyJoinTeam(params: API.TeamQueryParams){
   })
 }
 
+
 export async function getHistoryList(){
   return request<API.BaseResponse<API.TeamUserVOParams>>('/api/team/list/get/history')
 }
@@ -106,15 +107,36 @@ export async function getApplyListAPI(params: API.TeamApplyParams){
   return request<API.BaseResponse<API.TeamApplyParams>>('/api/team/list/get/applyList',{params})
 }
 
+export async function getWelcomeList(){
+  return request<API.BaseResponse<API.TeamUserVOParams>>('/api/team/list/get/welcome')
+}
+
 export async function applyJoinTeamAPI(params: API.TeamApplyJoinParams){
   return request<API.BaseResponse<boolean>>('/api/team/join',{
     method: 'POST',
     data: params,
   })
 }
-
+export async function setPassWelcome(params: API.TeamWelcomeDealParams){
+  return request<API.BaseResponse<boolean>>('/api/team/set/welcome/pass',{
+    method: 'POST',
+    data: params,
+  })
+}
+export async function setErrorWelcome(params: API.TeamWelcomeDealParams){
+  return request<API.BaseResponse<boolean>>('/api/team/set/welcome/refuse',{
+    method: 'POST',
+    data: params,
+  })
+}
 export async function setPassApply(params: API.DealApplyParams){
   return request<API.BaseResponse<boolean>>('/api/team/set/apply/pass',{
+    method: 'POST',
+    data: params,
+  })
+}
+export async function teamWelcome(params: API.WelcomeJoinParams){
+  return request<API.BaseResponse<boolean>>('/api/team/welcome',{
     method: 'POST',
     data: params,
   })
@@ -126,6 +148,20 @@ export async function setErrorApply(params: API.DealApplyParams){
     data: params,
   })
 }
+export async function getTeamUserVO(params: API.DeleteTeamParams){
+  return request<API.BaseResponse<API.TeamUserVOParams>>('/api/team/get/teamVO',{
+    method: 'POST',
+    data: params,
+  })
+}
+
+export async function getTeamArticles(params: API.DeleteTeamParams){
+  return request<API.BaseResponse<API.ArticleVOParams[]>>('/api/article/list',{
+    method: 'POST',
+    data: params,
+  })
+}
+
 export async function updateUserInf(params: API.UpdateUserParams){
   return request<API.BaseResponse<number>>('/api/user/update',{
     method: 'POST',

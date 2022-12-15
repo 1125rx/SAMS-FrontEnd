@@ -25,13 +25,15 @@ const ShowTeamCreater = (props) => {
     return '';
   };
   return (
-    <Drawer width={640} placement="right" closable={false}  open={isShowTeam} onClose={()=>isShowTeamDrawer(false,team)} title={"Creator's Profile"}>
+    <Drawer width={640} placement="right" closable={false}  open={isShowTeam} onClose={()=>isShowTeamDrawer(false,team)} title={"Team's Profile"}>
       <Descriptions bordered >
         <Descriptions.Item label="Avatar" span={3}>
           <Avatar src={getAvatarURL()} size={64} />
         </Descriptions.Item>
-        <Descriptions.Item label="Id" span={2}>{team.t_id}</Descriptions.Item>
-        <Descriptions.Item label="CreateTime" span={1}>{team.t_createTime}</Descriptions.Item>
+        <Descriptions.Item label="Id" span={1}>{team.t_id}</Descriptions.Item>
+        <Descriptions.Item label="Name" span={2}>{team.t_name}</Descriptions.Item>
+        {/*<Descriptions.Item label="Creator" span={1}>{team.t_createUser.userName}</Descriptions.Item>*/}
+        <Descriptions.Item label="CreateTime" span={3}>{team.t_createTime}</Descriptions.Item>
         <Descriptions.Item label="Description" span={3}>
           {team.t_description}
         </Descriptions.Item>

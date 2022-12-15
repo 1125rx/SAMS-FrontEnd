@@ -7,6 +7,8 @@ import {PageContainer, ProForm} from "@ant-design/pro-components";
 import {ProFormSelect, ProFormText} from "@ant-design/pro-form/es";
 import {ProFormInstance} from "@ant-design/pro-form";
 import message from "antd/es/message";
+import {Link} from "@umijs/max";
+
 
 
 // const data = Array.from({ length: 23 }).map((_, i) => ({
@@ -182,9 +184,11 @@ const App: React.FC = () => {
               <Button type="primary" shape="circle" icon={<TeamOutlined />} title={"队员信息"} onClick={() => {
                 isShowMembers(true,item)
               }}/>,
-              <Button type={"primary"} shape={"circle"} icon={<HomeOutlined />} title={"进入空间"} onClick={()=>{
-                console.log(item.t_id)
-              }}/>,
+              <Link to={`/team/myJoin/space/${item.t_id}`}>
+                <Button type={"primary"} shape={"circle"} icon={<HomeOutlined />} title={"进入空间"} onClick={()=>{
+                  console.log(item.t_id)
+                }}/>
+              </Link>,
               <Tag color={statusMap[item.t_status].color}>{statusMap[item.t_status].text}</Tag>,
             ]}
             extra={

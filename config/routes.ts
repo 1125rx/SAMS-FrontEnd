@@ -26,7 +26,8 @@ export default [
       {path: '/team/list',name: '队伍列表',component: './Team/TeamList'},
       {path: '/team/myCreate',name: '我的创建',component: './Team/MyCreateTeam'},
       {path: '/team/myJoin',name: '我的加入',component: './Team/MyJoinTeam'},
-      {path: '/team/create', name: '创建队伍', component: './Team/CreateTeam'}
+      {path: '/team/create', name: '创建队伍', component: './Team/CreateTeam'},
+      {path: '/team/myJoin/space/:id', name: '队伍空间', component: './TeamSpace', hideInMenu: true,}
     ],
   },
   {

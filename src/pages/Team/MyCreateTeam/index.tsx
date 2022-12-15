@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {DeleteOutlined, EditOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
+import {DeleteOutlined, EditOutlined, TeamOutlined, UserAddOutlined, UserOutlined} from '@ant-design/icons';
 import {Avatar, Button, Descriptions, Drawer, List, Modal, Popconfirm, Result, Space, Tag} from 'antd';
 import {deleteTeam, getMyCreateTeamList, getTeamList} from "@/services/ant-design-pro/api";
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
@@ -8,6 +8,7 @@ import {ProFormSelect, ProFormText} from "@ant-design/pro-form/es";
 import {ProFormInstance} from "@ant-design/pro-form";
 import message from "antd/es/message";
 import UpdateTeam from "@/pages/Team/MyCreateTeam/components/UpdateTeam";
+import ApplyJoinTeam from "@/pages/Team/MyCreateTeam/components/ApplyJoinTeam";
 
 
 // const data = Array.from({ length: 23 }).map((_, i) => ({
@@ -52,6 +53,7 @@ const App: React.FC = () => {
   const [team,setTeam] = useState<API.TeamUserVOParams>({})
   const [open,setOpen] = useState<boolean>(false)
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+  const [isWelcomeModalVisible, setIsWelcomeModalVisible] = useState<boolean>(false)
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false)
   // @ts-ignore
   const [applyTeamId, setApplyTeamId] = useState<number>({})
@@ -150,6 +152,10 @@ const App: React.FC = () => {
     setCreateUserTags(() => JSON.stringify(showTags(resCreateUser)))
     console.log("222" + createUserTags)
   }
+  const isShowWelcomeModal = (show: boolean, data: number) => {
+    setIsWelcomeModalVisible(show)
+    setApplyTeamId(data)
+  }
   const isShowMembers = (show: boolean, item: API.TeamUserVOParams) =>{
     setOpen(show)
     setTeam(item)
@@ -202,6 +208,12 @@ const App: React.FC = () => {
               <Button type="primary" shape="circle" icon={<TeamOutlined />} title={"队员信息"} onClick={() => {
                 isShowMembers(true,item)
               }}/>,
+              <Button type="primary" shape="circle" icon={<UserAddOutlined />} title={"邀请加入队伍"} onClick={() => {
+                isShowWelcomeModal(true,item.t_id)
+              }}/>,
+              <Button type={"primary"} shape={"circle"} icon={<EditOutlined />} title={"编辑队伍信息"} onClick={()=>{
+                isShowUpdateModal(true,item)
+              }}/>,
               <Popconfirm
                 title={"确定要解散"+item.t_name+"吗？一旦解散，将删除所有相关信息"}
                 onConfirm={()=>{
@@ -210,13 +222,11 @@ const App: React.FC = () => {
                 // @ts-ignore
                 onCancel={cancel}
               >
-                <Button type={"primary"} shape={"circle"} icon={<DeleteOutlined />} title={"解散队伍"} onClick={()=>{
+                <Button type={"primary"} danger={true} shape={"circle"} icon={<DeleteOutlined />} title={"解散队伍"} onClick={()=>{
                   console.log(item.t_id)
                 }}/>
               </Popconfirm>,
-              <Button type={"primary"} shape={"circle"} icon={<EditOutlined />} title={"编辑队伍信息"} onClick={()=>{
-                isShowUpdateModal(true,item)
-              }}/>,
+
               <Tag color={statusMap[item.t_status].color}>{statusMap[item.t_status].text}</Tag>,
             ]}
             extra={
@@ -246,6 +256,11 @@ const App: React.FC = () => {
         isModalVisible={isModalVisible}
         isShowUpdateModal={isShowUpdateModal}
         team={team}
+      />
+      <ApplyJoinTeam
+        applyTeamId={applyTeamId}
+        isShowApplyModal={isShowWelcomeModal}
+        isModalVisible={isWelcomeModalVisible}
       />
       <Drawer width={640} placement="right" closable={false}  open={open} onClose={()=>isShowMembers(false,team)} title={"Members' Profile"}>
         <Space direction={"vertical"}>

@@ -19,11 +19,27 @@ declare namespace API {
     userRole: number;
     createTime: Date;
   };
+  type ArticleVOParams = {
+    id: number,
+    userVO: CurrentUser,
+    teamId: number,
+    mainBody: string,
+    likeNum: string,
+    publishTime: Date,
+  }
   type MatchUserParams = {
     num: number,
   }
   type UpdateTagParams = {
     tags: string,
+  }
+  type WelcomeJoinParams = {
+    userId: number,
+    teamId: number,
+    description: string,
+  }
+  type TeamWelcomeDealParams = {
+    id: number,
   }
   type UpdateTeamParams = {
     t_id: number,

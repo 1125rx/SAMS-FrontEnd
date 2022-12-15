@@ -1,11 +1,17 @@
-import {getApplyListAPI, setErrorApply, setPassApply} from '@/services/ant-design-pro/api';
+import {
+  getWelcomeList,
+  setErrorApply,
+  setErrorWelcome,
+  setPassApply,
+  setPassWelcome
+} from '@/services/ant-design-pro/api';
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
-import {Button, message, Tag} from 'antd';
+import {Avatar, Button, message, Space, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
-import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
-import ShowTeam from "@/pages/TableList/components/ShowTeam";
+import ShowTeamCreater from "@/pages/WelcomeList/components/ShowTeamCreater";
+import ShowTeam from "@/pages/WelcomeList/components/ShowTeam";
 
 const statusMap = {
   0: {
@@ -25,10 +31,11 @@ const statusMap = {
     text: '待处理',
   },
 }
-const TableList: React.FC = () => {
+const WelcomeList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // @ts-ignore
   const [createUser, setCreateUser] = useState<API.CurrentUser>({})
+  // @ts-ignore
   const [team, setTeam] = useState<API.TeamUserVOParams>({})
   const [isShowTeam, setIsShowTeam] = useState<boolean>(false)
   // @ts-ignore
@@ -60,12 +67,12 @@ const TableList: React.FC = () => {
 
   const setApplyStatusSuccess = async (apply: number) => {
     console.log(apply);
-    const res: API.DealApplyParams = {
+    const res: API.TeamWelcomeDealParams = {
       id: apply
     }
-    const response = await setPassApply(res);
+    const response = await setPassWelcome(res);
     if (response.code === 0 && response.data === true) {
-      message.success("已通过申请！")
+      message.success("已通过邀请！")
       // @ts-ignore
       actionRef.current.reload()
     }
@@ -79,9 +86,9 @@ const TableList: React.FC = () => {
     const res: API.DealApplyParams = {
       id: apply
     }
-    const response = await setErrorApply(res);
+    const response = await setErrorWelcome(res);
     if (response.code === 0 && response.data === true) {
-      message.success("已拒绝申请！")
+      message.success("已拒绝邀请！")
       // @ts-ignore
       actionRef.current.reload()
     }
@@ -90,28 +97,40 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.TeamApplyParams>[] = [
     {
-      title: '申请者',
+      dataIndex: 'index',
+      valueType: 'index',
+      width: 48,
+    },
+    {
+      title: '邀请者',
       dataIndex: 'user',
       render: (dom, entity) => {
         return (
-          <a onClick={() => {
-            isShowDrawer(true, entity.user)
-          }}>
-            {entity.user.userName}
-          </a>
+          <Space>
+            <Avatar src={entity.user.avatarUrl}/>
+            <a onClick={() => {
+              isShowDrawer(true, entity.user)
+            }}>
+              {entity.user.userName}
+            </a>
+          </Space>
+
         );
       },
     },
     {
-      title: '申请加入队伍',
+      title: '邀请队伍',
       dataIndex: 'team',
       render: (dom, entity) => {
         return (
-          <a onClick={() => {
-            isShowTeamDrawer(true, entity.teamUserVO)
-          }}>
-            {entity.teamUserVO.t_name}
-          </a>
+          <Space>
+            <Avatar src={entity.teamUserVO.t_avatarUrl}/>
+            <a onClick={() => {
+              isShowTeamDrawer(true, entity.teamUserVO)
+            }}>
+              {entity.teamUserVO.t_name}
+            </a>
+          </Space>
         );
       },
     },
@@ -123,14 +142,14 @@ const TableList: React.FC = () => {
     {
       title: '提交时间',
       dataIndex: 'createTime',
-      valueType: 'date',
-
+      valueType: 'dateTime',
+      defaultSortOrder: "descend",
+      sorter: (a, b) => a.createTime.toString().localeCompare(b.createTime.toString()),
 
     },
     {
       title: '状态',
       dataIndex: 'applyStatus',
-      defaultSortOrder: "ascend",
       sorter: (a, b) => a.applyStatus - b.applyStatus,
       render: (_, record) => <Tag color={statusMap[record.applyStatus].color}>{statusMap[record.applyStatus].text}</Tag>
     },
@@ -141,12 +160,12 @@ const TableList: React.FC = () => {
       render: (_, record) => [
         <Button onClick={() => {
           setApplyStatusSuccess(record.id)
-        }} type="primary" shape="round" disabled={record.applyStatus !== 0}>
+        }} type="primary" shape="round" disabled={record.applyStatus !== 3}>
           通过
         </Button>,
         <Button onClick={() => {
           setApplyStatusError(record.id)
-        }} type="primary" shape="round" danger={true} disabled={record.applyStatus !== 0}>
+        }} type="primary" shape="round" danger={true} disabled={record.applyStatus !== 3}>
           拒绝
         </Button>
       ],
@@ -158,11 +177,10 @@ const TableList: React.FC = () => {
         headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
-        request={async (params = {}) => {
-          const res = await getApplyListAPI(params)
+        search={false}
+        //@ts-ignore
+        request={async () => {
+          const res = await getWelcomeList()
           return {
             data: res.data
           }
@@ -185,4 +203,4 @@ const TableList: React.FC = () => {
     </PageContainer>
   );
 };
-export default TableList;
+export default WelcomeList;

@@ -1,10 +1,10 @@
 // @ts-ignore
 import React, {useRef} from 'react';
-import {applyJoinTeamAPI} from "@/services/ant-design-pro/api";
+import {applyJoinTeamAPI, teamWelcome} from "@/services/ant-design-pro/api";
 import message from "antd/es/message";
 import {Modal} from "antd";
 import ProForm, {ProFormInstance} from "@ant-design/pro-form";
-import {ProFormTextArea} from "@ant-design/pro-components";
+import {ProFormText, ProFormTextArea} from "@ant-design/pro-components";
 
 // @ts-ignore
 const ApplyJoinTeam = (props) => {
@@ -14,21 +14,21 @@ const ApplyJoinTeam = (props) => {
 
   const formRef = useRef<ProFormInstance>()
 
-  const applyJoinTeam = async(values: API.TeamApplyJoinParams)=>{
-    const res=await applyJoinTeamAPI(values)
+  const applyJoinTeam = async(values: API.WelcomeJoinParams)=>{
+    const res=await teamWelcome(values)
     if (res.code === 0 && res.data === true){
-      message.success("申请成功！请等待审核")
+      message.success("邀请成功！请等待审核")
       isShowApplyModal(false)
     }
     else {
-      message.error("申请失败！原因为："+res.description)
+      message.error("邀请失败！原因为："+res.description)
       isShowApplyModal(false)
     }
   }
 
   return (
     <Modal
-      title={"申请页面"}
+      title={"邀请页面"}
       visible={isModalVisible}
       onCancel={()=>isShowApplyModal(false)}
       destroyOnClose={true}
@@ -40,14 +40,25 @@ const ApplyJoinTeam = (props) => {
         // @ts-ignore
         onFinish={() =>{
           const details = formRef.current?.getFieldValue("details")
-          const res: API.TeamApplyJoinParams = {
-            t_id: applyTeamId,
-            details: details,
+          const userId = formRef.current?.getFieldValue("userId")
+          const res: API.WelcomeJoinParams = {
+            userId: userId,
+            teamId: applyTeamId,
+            description: details,
           }
           console.log(res)
           applyJoinTeam(res)
         }}
       >
+        <ProFormText
+          label={"邀请对象id"}
+          name={"userId"}
+          placeholder={"请输入邀请者id"}
+          rules={[{
+            required:true,
+            message: '该项为必填项',
+          }]}
+        />
         <ProFormTextArea
           label={"申请描述"}
           name={"details"}

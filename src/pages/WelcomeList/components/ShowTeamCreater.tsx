@@ -1,4 +1,4 @@
-import {Avatar, Descriptions, Drawer} from 'antd';
+import {Avatar, Descriptions, Drawer, Tag} from 'antd';
 // @ts-ignore
 import React from 'react';
 
@@ -8,11 +8,25 @@ const ShowTeamCreater = (props) => {
   const {isShowDetails} =props
   const {teamCreater} = props
   const {isShowDrawer} = props
-  const {tags} = props
   console.log(isShowDetails)
 
   console.log("111"+teamCreater)
 
+  const showTags=()=>{
+    const list=[]
+    if (teamCreater){
+      if (teamCreater.tag){
+        for (let i=0;i<teamCreater.length;i++){
+          list.push(
+            <Tag color={"blue"}>
+              {teamCreater.tag[i]}
+            </Tag>
+          )
+        }
+      }
+    }
+    return list
+  }
 
   const getAvatarURL = () => {
     if (teamCreater) {
@@ -44,7 +58,7 @@ const ShowTeamCreater = (props) => {
           {teamCreater.userEmail}
         </Descriptions.Item>
         <Descriptions.Item label="Tags" span={3}>
-          {tags}
+          {showTags()}
         </Descriptions.Item>
         <Descriptions.Item label="Description" span={3}>
           {teamCreater.userDescription}
