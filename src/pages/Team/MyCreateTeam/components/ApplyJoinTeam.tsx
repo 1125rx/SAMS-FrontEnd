@@ -1,6 +1,6 @@
 // @ts-ignore
 import React, {useRef} from 'react';
-import {applyJoinTeamAPI, teamWelcome} from "@/services/ant-design-pro/api";
+import {teamWelcome} from "@/services/ant-design-pro/api";
 import message from "antd/es/message";
 import {Modal} from "antd";
 import ProForm, {ProFormInstance} from "@ant-design/pro-form";

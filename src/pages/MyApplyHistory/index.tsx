@@ -1,8 +1,8 @@
-import {getHistoryList, setErrorApply, setPassApply} from '@/services/ant-design-pro/api';
+import {getHistoryList} from '@/services/ant-design-pro/api';
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';
-import {Avatar, message, Space, Tag} from 'antd';
+import {Avatar, Space, Tag} from 'antd';
 import React, {useRef, useState} from 'react';
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import ShowTeam from "@/pages/TableList/components/ShowTeam";
@@ -58,37 +58,6 @@ const TableList: React.FC = () => {
     setIsShowTeam(show)
     setTeam(item)
   }
-
-  const setApplyStatusSuccess = async (apply: number) => {
-    console.log(apply);
-    const res: API.DealApplyParams = {
-      id: apply
-    }
-    const response = await setPassApply(res);
-    if (response.code === 0 && response.data === true) {
-      message.success("已通过申请！")
-      // @ts-ignore
-      actionRef.current.reload()
-    }
-  }
-
-  /**
-   * 拒绝审批
-   * @param apply
-   */
-  const setApplyStatusError = async (apply: number) => {
-    const res: API.DealApplyParams = {
-      id: apply
-    }
-    const response = await setErrorApply(res);
-    if (response.code === 0 && response.data === true) {
-      message.success("已拒绝申请！")
-      // @ts-ignore
-      actionRef.current.reload()
-    }
-  }
-
-
   const columns: ProColumns<API.TeamApplyParams>[] = [
     {
       dataIndex: 'index',

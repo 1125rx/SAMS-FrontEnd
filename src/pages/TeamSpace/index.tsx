@@ -1,11 +1,12 @@
-import {LikeOutlined, MessageOutlined, StarOutlined} from '@ant-design/icons';
+import {LikeOutlined, MessageOutlined, SendOutlined, StarOutlined} from '@ant-design/icons';
 import {PageContainer, ProList} from '@ant-design/pro-components';
-import {Avatar, Button, Space, Tag} from 'antd';
+import {Avatar, Button, Form, Space, Tag, Typography} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {useParams} from "@umijs/max";
 import {getTeamArticles, getTeamUserVO} from "@/services/ant-design-pro/api";
 import message from "antd/es/message";
 import moment from "moment";
+import TextEditor from "@/components/TextEditor";
 
 const IconText = ({ icon, text }: { icon: any; text: string }) => (
   <span>
@@ -13,10 +14,17 @@ const IconText = ({ icon, text }: { icon: any; text: string }) => (
     {text}
   </span>
 );
+interface IPostCreate {
+  body: string;
+}
+const { Item } = Form;
+const { Title } = Typography;
 const TeamSpace: React.FC = () => {
   const params = useParams()
   const [articleList,setArticleList] = useState<API.ArticleVOParams[]>([])
+  // @ts-ignore
   const [teamInf,setTeamInf] = useState<API.TeamUserVOParams>({})
+  // @ts-ignore
   useEffect(async ()=>{
     const deleteRequest: API.DeleteTeamParams = {
       t_id: parseInt(params.id as string)
@@ -30,6 +38,7 @@ const TeamSpace: React.FC = () => {
       message.error("获取错误！错误代码为："+res.code)
     }
   },[])
+  // @ts-ignore
   useEffect(async ()=>{
     const deleteRequest: API.DeleteTeamParams = {
       t_id: parseInt(params.id as string)
@@ -43,7 +52,13 @@ const TeamSpace: React.FC = () => {
       message.error("获取错误！错误代码为："+res.code)
     }
   },[])
+  const [form] = Form.useForm();
 
+  const onSubmit = (values: IPostCreate) => {
+    // logic to submit form to server
+    console.log(values.body);
+    form.resetFields();
+  };
   const showTags=(restUser: API.CurrentUser)=>{
     const list=[]
     if (restUser){
@@ -62,14 +77,37 @@ const TeamSpace: React.FC = () => {
   }
   return (
     <PageContainer>
-      <ProList<API.ArticleVOParams>
-        toolBarRender={() => {
-          return [
-            <Button key="3" type="primary">
+      <div>
+        <Title level={5}>Your Post</Title>
+        <Form layout="vertical" form={form} onFinish={onSubmit}>
+          <Item
+            name="body"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter body of post',
+              },
+            ]}
+          >
+            {/* @ts-ignore */}
+            <TextEditor />
+          </Item>
+          <Item>
+            <Button htmlType="submit" type="primary" shape={"round"} icon={<SendOutlined />}>
               发布文章
-            </Button>,
-          ];
-        }}
+            </Button>
+          </Item>
+        </Form>
+      </div>
+      <ProList<API.ArticleVOParams>
+        // toolBarRender={() => {
+        //   return [
+        //     <Button key="3" type="primary" onClick={()=>{
+        //     }}>
+        //       发布文章
+        //     </Button>,
+        //   ];
+        // }}
         itemLayout="vertical"
         rowKey="id"
         headerTitle={"❤"+teamInf.t_name+"❤的空间"}

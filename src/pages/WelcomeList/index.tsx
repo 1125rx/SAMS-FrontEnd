@@ -1,10 +1,4 @@
-import {
-  getWelcomeList,
-  setErrorApply,
-  setErrorWelcome,
-  setPassApply,
-  setPassWelcome
-} from '@/services/ant-design-pro/api';
+import {getWelcomeList, setErrorWelcome, setPassWelcome} from '@/services/ant-design-pro/api';
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable,} from '@ant-design/pro-components';
 import '@umijs/max';

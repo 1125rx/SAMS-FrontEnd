@@ -29,6 +29,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // @ts-ignore
   const [createUser, setCreateUser] = useState<API.CurrentUser>({})
+  // @ts-ignore
   const [team, setTeam] = useState<API.TeamUserVOParams>({})
   const [isShowTeam, setIsShowTeam] = useState<boolean>(false)
   // @ts-ignore

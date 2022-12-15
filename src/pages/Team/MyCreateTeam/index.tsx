@@ -210,7 +210,7 @@ const App: React.FC = () => {
               }}/>,
               <Button type="primary" shape="circle" icon={<UserAddOutlined />} title={"邀请加入队伍"} onClick={() => {
                 isShowWelcomeModal(true,item.t_id)
-              }}/>,
+              }} disabled={item.t_maxNum === item.hasJoinNum}/>,
               <Button type={"primary"} shape={"circle"} icon={<EditOutlined />} title={"编辑队伍信息"} onClick={()=>{
                 isShowUpdateModal(true,item)
               }}/>,
