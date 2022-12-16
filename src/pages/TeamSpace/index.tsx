@@ -1,9 +1,15 @@
-import {LikeOutlined, MessageOutlined, SendOutlined, StarOutlined} from '@ant-design/icons';
-import {PageContainer, ProList} from '@ant-design/pro-components';
+import {DeleteOutlined, FieldTimeOutlined, LikeOutlined, SendOutlined} from '@ant-design/icons';
+import {ActionType, PageContainer, ProList} from '@ant-design/pro-components';
 import {Avatar, Button, Form, Space, Tag, Typography} from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "@umijs/max";
-import {getTeamArticles, getTeamUserVO} from "@/services/ant-design-pro/api";
+import {
+  deleteTeamArticles,
+  getTeamArticles,
+  getTeamUserVO,
+  likeTeamArticles,
+  publishArticle
+} from "@/services/ant-design-pro/api";
 import message from "antd/es/message";
 import moment from "moment";
 import TextEditor from "@/components/TextEditor";
@@ -53,12 +59,54 @@ const TeamSpace: React.FC = () => {
     }
   },[])
   const [form] = Form.useForm();
+  const actionRef=useRef<ActionType>()
 
-  const onSubmit = (values: IPostCreate) => {
+  const onSubmit = async (values: IPostCreate) => {
     // logic to submit form to server
     console.log(values.body);
+    const resData: API.PublishArticleParams = {
+      teamId: parseInt(params.id as string),
+      mainBody: values.body,
+    }
+    const response = await publishArticle(resData)
+    if (response.code === 0 && response.data === true){
+      message.success("发布文章成功！")
+      location.reload()
+    }
+    else
+      message.error("发布错误！错误代码："+response.code)
     form.resetFields();
   };
+  const showHtml = (text: string) => {
+    let html = {
+      __html: text,
+    }
+    return <div dangerouslySetInnerHTML={html}></div>
+  }
+  const likeArticle = async (id: number) => {
+    const resData: API.DeleteTeamParams = {
+      t_id: id,
+    }
+    const res = await likeTeamArticles(resData)
+    if (res.code === 0 && res.data === true){
+      location.reload()
+      message.success("点赞成功！")
+    }
+  }
+  const deleteArticle = async (id: number) => {
+    const resData: API.DeleteArticleParams = {
+      teamId: parseInt(params.id as string),
+      id: id,
+    }
+    const res = await deleteTeamArticles(resData)
+    if (res.code === 0 && res.data > 0){
+      message.success("删除成功！")
+      location.reload()
+    }
+    else {
+      message.error("删除失败！原因为："+res.description+"["+res.code+"]")
+    }
+  }
   const showTags=(restUser: API.CurrentUser)=>{
     const list=[]
     if (restUser){
@@ -76,7 +124,7 @@ const TeamSpace: React.FC = () => {
     return list
   }
   return (
-    <PageContainer>
+    <PageContainer >
       <div>
         <Title level={5}>Your Post</Title>
         <Form layout="vertical" form={form} onFinish={onSubmit}>
@@ -110,6 +158,7 @@ const TeamSpace: React.FC = () => {
         // }}
         itemLayout="vertical"
         rowKey="id"
+        actionRef={actionRef}
         headerTitle={"❤"+teamInf.t_name+"❤的空间"}
         dataSource={articleList}
         metas={{
@@ -130,21 +179,24 @@ const TeamSpace: React.FC = () => {
           },
           actions: {
             render: (_,row) => [
-              <IconText icon={StarOutlined} text="666" key="list-vertical-star-o" />,
-              <IconText icon={LikeOutlined} text={row.likeNum} key="list-vertical-like-o" />,
-              <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />,
-              <a>
-                {"发布时间："+moment(row.publishTime).format('YYYY-MM-DD')}
-              </a>
+              <a onClick={()=>{
+                likeArticle(row.id)
+              }} color={"green"}>
+                <IconText icon={LikeOutlined} text={row.likeNum} key="list-vertical-like-o" />
+              </a>,
+              <a color={"red"} onClick={()=>{
+                deleteArticle(row.id)
+              }}>
+                <IconText icon={DeleteOutlined} text="删除" key="list-vertical-message" />
+              </a>,
+              <IconText icon={FieldTimeOutlined} text={"发布时间："+moment(row.publishTime).format('YYYY-MM-DD')} key="list-vertical-message" />,
             ],
           },
           extra: {},
           content: {
             render: (_,row) => {
               return (
-                <div>
-                  {row.mainBody}
-                </div>
+                showHtml(row.mainBody)
               );
             },
           },

@@ -30,6 +30,14 @@ declare namespace API {
   type MatchUserParams = {
     num: number,
   }
+  type DeleteArticleParams = {
+    teamId: number,
+    id: number,
+  }
+  type PublishArticleParams = {
+    teamId: number,
+    mainBody: string,
+  }
   type UpdateTagParams = {
     tags: string,
   }

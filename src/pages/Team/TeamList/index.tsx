@@ -139,7 +139,7 @@ const App: React.FC = () => {
               }}/>,
               <Button type="primary" shape="circle" icon={<UsergroupAddOutlined/>} title={"申请加入"} onClick={() => {
                 isShowModal(true, item.t_id)
-              }} disabled={item.t_maxNum === item.hasJoinNum}/>,
+              }} disabled={item.t_maxNum === item.hasJoinNum || item.t_status === 1}/>,
               <Tag color={statusMap[item.t_status].color}>{statusMap[item.t_status].text}</Tag>,
             ]}
             extra={

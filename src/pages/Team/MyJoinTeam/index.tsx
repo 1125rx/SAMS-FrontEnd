@@ -1,14 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {HomeOutlined, SearchOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
-import {Avatar, Button, Descriptions, Drawer, List, Modal, Space, Tag} from 'antd';
-import {getMyJoinTeam} from "@/services/ant-design-pro/api";
+import {HomeOutlined, LogoutOutlined, SearchOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
+import {Avatar, Button, Descriptions, Drawer, List, Modal, Popconfirm, Space, Tag} from 'antd';
+import {getMyJoinTeam, quitTeamRequest} from "@/services/ant-design-pro/api";
 import ShowTeamCreater from "@/pages/Team/TeamList/components/ShowTeamCreater";
 import {PageContainer, ProForm} from "@ant-design/pro-components";
 import {ProFormSelect, ProFormText} from "@ant-design/pro-form/es";
 import {ProFormInstance} from "@ant-design/pro-form";
 import message from "antd/es/message";
 import {Link} from "@umijs/max";
-
 
 
 // const data = Array.from({ length: 23 }).map((_, i) => ({
@@ -144,6 +143,25 @@ const App: React.FC = () => {
     console.log("222" + createUserTags)
   }
 
+  const confirm = async (item: number) => {
+    const res: API.DeleteTeamParams = {
+      t_id: item
+    }
+    const response = await quitTeamRequest(res)
+    if (response.code === 0 && response.data === true){
+      message.success('已成功删除！');
+      location.reload()
+    }
+    else {
+      message.error("删除失败！错误代码： "+response.code)
+    }
+
+  };
+
+  const cancel = (e: React.MouseEvent<HTMLElement>) => {
+    console.log(e);
+  };
+
   return (
     <PageContainer>
       <div>
@@ -189,6 +207,18 @@ const App: React.FC = () => {
                   console.log(item.t_id)
                 }}/>
               </Link>,
+              <Popconfirm
+                title={"确定要退出"+item.t_name+"吗？一旦退出，将删除所有相关信息"}
+                onConfirm={()=>{
+                  confirm(item.t_id)
+                }}
+                // @ts-ignore
+                onCancel={cancel}
+              >
+                <Button type={"primary"} danger={true} shape={"circle"} icon={<LogoutOutlined />} title={"退出队伍"} onClick={()=>{
+                  console.log(item.t_id)
+                }}/>
+              </Popconfirm>,
               <Tag color={statusMap[item.t_status].color}>{statusMap[item.t_status].text}</Tag>,
             ]}
             extra={

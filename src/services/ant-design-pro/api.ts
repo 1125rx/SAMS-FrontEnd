@@ -162,6 +162,34 @@ export async function getTeamArticles(params: API.DeleteTeamParams){
   })
 }
 
+export async function quitTeamRequest(params: API.DeleteTeamParams){
+  return request<API.BaseResponse<boolean>>('/api/team/quit',{
+    method: 'POST',
+    data: params,
+  })
+}
+
+export async function deleteTeamArticles(params: API.DeleteArticleParams){
+  return request<API.BaseResponse<number>>('/api/article/delete',{
+    method: 'POST',
+    data: params,
+  })
+}
+
+export async function likeTeamArticles(params: API.DeleteTeamParams){
+  return request<API.BaseResponse<boolean>>('/api/article/like',{
+    method: 'POST',
+    data: params,
+  })
+}
+
+export async function publishArticle(params: API.PublishArticleParams){
+  return request<API.BaseResponse<boolean>>('/api/article/publish',{
+    method: 'POST',
+    data: params,
+  })
+}
+
 export async function updateUserInf(params: API.UpdateUserParams){
   return request<API.BaseResponse<number>>('/api/user/update',{
     method: 'POST',
